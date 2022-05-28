@@ -21,14 +21,15 @@
     </div>
     <br>
     <div class="large-12 medium-12 small-12 cell">
-      <button v-on:click="submitfiles()">Submit</button>
+      <button :disabled="files.length==0" v-on:click="submitfiles()">Submit</button>
     </div>
   </div>
 </template>
 
 <script>
 import axios from "axios";
-const HOST = "http://127.0.0.1:5000";
+
+const HOSTNAME = process.env.VUE_APP_HOSTNAME;
 
 export default {
 
@@ -63,7 +64,7 @@ export default {
         if (this.isExcel(uploadedFiles[i].name)) {
           this.files.push( uploadedFiles[i] );
         } else {
-          this.error += `<div class="file-listing">File ${uploadedFiles[i].name} is not an excel file</div></br>`
+          this.error += `<b-alert show variant="danger">File ${uploadedFiles[i].name} is not an excel file</b-alert>`
         }
       }
     },
@@ -72,13 +73,14 @@ export default {
     },
 
     submitfiles () {
+
       let formData = new FormData();
       for( let i = 0; i < this.files.length; i++ ){
         let file = this.files[i];
         formData.append('arrayOfExcelFile', file);
       }
-
-      axios.post( `${HOST}/transaction/upload`,
+      console.log(HOSTNAME)
+      axios.post( `${HOSTNAME}/transaction/upload`,
           formData,
           {
             headers: {
