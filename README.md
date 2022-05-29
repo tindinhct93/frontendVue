@@ -1,4 +1,5 @@
-# vue-app
+# ExcelUpload Frontend
+Demo link: https://main.dclcjdj5093e5.amplifyapp.com/
 
 ## Project setup
 ```
@@ -20,5 +21,8 @@ npm run build
 npm run lint
 ```
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+### 2 routes:
+- Main form: Upload the excel and receive the result from the backend
+
+- History: view the transaction has been upload in the history
+
