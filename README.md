@@ -1,5 +1,5 @@
 # ExcelUpload Frontend
-Demo link: https://main.dclcjdj5093e5.amplifyapp.com/
+Demo link: http://exceluploadfrontend1234.s3-website-ap-southeast-1.amazonaws.com/
 
 ### 2 routes:
 - Main form: Upload the excel and receive the result from the backend
