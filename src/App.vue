@@ -1,15 +1,15 @@
 <template>
   <the-header></the-header>
-  <FileUpload></FileUpload>
+  <router-view></router-view>
 </template>
 
 <script>
 import TheHeader from './components/TheHeader.vue';
-import FileUpload from "./components/FileUpload.vue";
+
 
 export default {
   components: {
-    TheHeader,FileUpload
+    TheHeader
   }
 }
 </script>

@@ -1,10 +1,10 @@
 <template>
   <div class="container">
     <div class="large-12 medium-12 small-12 cell">
-      <h2>Select Files</h2>
-      <div id = "error" v-html="error"></div>
+      <h2>Select One File For Upload</h2>
+      <div class = "error" v-html="error"></div>
       <hr/>
-      <label for="select-files">Files
+      <label for="select-files">File name
         <input id="select-files" type="file" multiple @change="handleFileUpload($event)"/>
       </label>
     </div>
@@ -23,24 +23,51 @@
     <div class="large-12 medium-12 small-12 cell">
       <button :disabled="files.length==0" v-on:click="submitfiles()">Submit</button>
     </div>
+    <div class="error" v-if = "uploadErros != ''">
+      {{uploadErros}}
+    </div>
+    <div v-else-if = "uploadResults.length!=0">
+      Uploaded data
+      <table  class="table table-striped">
+        <thead>
+        <tr>
+          <th>Time</th>
+          <th>Content</th>
+          <th>Amount</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr v-for="(rows,i) in uploadResults" :key="i">
+          <th scope="row">{{ getDate(rows.DatePost) }}</th>
+          <td>{{ rows.content }}</td>
+          <td>{{ rows.amount }}</td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
 </template>
 
 <script>
 import axios from "axios";
 
-const HOSTNAME = process.env.VUE_APP_HOSTNAME;
+const VUE_APP_HOSTNAME = process.env.VUE_APP_HOSTNAME;
 
 export default {
-
   data() {
     return {
       files: [],
       error: [],
-      result: []
+      uploadResults: [],
+      uploadErros: '',
     }
   },
   methods: {
+    getDate (dateString) {
+      let dateTime = new Date(dateString);
+      return `${dateTime.toDateString()} - ${dateTime.toLocaleTimeString()}`
+    },
+
     isExcel(filename) {
         let regex = /^([a-zA-Z0-9\s_\\.\-:])+(.xls|.xlsx)$/;
         if (regex.test(filename)) {
@@ -51,12 +78,16 @@ export default {
 
     addFiles(){
       document.getElementById('select-files').click();
+      this.error = '';
+      this.files = [];
+      this.uploadResults= [];
+      this.uploadErros = ""
     },
 
     handleFileUpload(event ){
       this.error = '';
       let uploadedFiles  = event.target.files;
-      if (uploadedFiles.length>5) {
+      if (uploadedFiles.length>1) {
         this.error = "Quantity exceed the maximum"
         return;
       }
@@ -72,27 +103,29 @@ export default {
       this.files.splice( key, 1 );
     },
 
-    submitfiles () {
-
+    async submitfiles () {
       let formData = new FormData();
       for( let i = 0; i < this.files.length; i++ ){
         let file = this.files[i];
-        formData.append('arrayOfExcelFile', file);
+        formData.append('file', file);
       }
-      console.log(HOSTNAME)
-      axios.post( `${HOSTNAME}/transaction/upload`,
-          formData,
-          {
-            headers: {
-              'Content-Type': 'multipart/form-data'
+
+      try {
+        let uploadRessult = await axios.post( `${VUE_APP_HOSTNAME}/transaction/upload`,
+            formData,
+            {
+              headers: {
+                'Content-Type': 'multipart/form-data'
+              }
             }
-          }
-      ).then(function(result){
-        console.log(result);
-      })
-          .catch(function(e){
-            console.log(e);
-          });
+        )
+        console.log(uploadRessult);
+        this.uploadResults = uploadRessult.data;
+        this.files = [];
+      } catch (e) {
+        console.log(e.response.data.error)
+        this.uploadErros = e.response.data.error;
+      }
     }
   }
 }
@@ -111,9 +144,13 @@ span.remove-file{
   float: right;
 }
 
-#error {
+.error {
   color: red;
   font-size: 15px
+}
+
+.file-listing {
+  color:blue
 }
 
 h3 {
@@ -129,5 +166,15 @@ li {
 }
 a {
   color: #42b983;
+}
+
+* {
+  margin: 10px;
+  display: center;
+}
+
+td, th {
+  border: 1px solid black;
+  column-width: 250px;
 }
 </style>
