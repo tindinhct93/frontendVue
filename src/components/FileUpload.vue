@@ -51,7 +51,7 @@
 <script>
 import axios from "axios";
 
-const VUE_APP_HOSTNAME = process.env.VUE_APP_HOSTNAME;
+const VUE_APP_HOSTNAME = 'http://Exceluploadbackend-env.eba-ytcdwvkr.ap-southeast-1.elasticbeanstalk.com';
 
 export default {
   data() {
