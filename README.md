@@ -1,6 +1,12 @@
 # ExcelUpload Frontend
 Demo link: https://main.dclcjdj5093e5.amplifyapp.com/
 
+### 2 routes:
+- Main form: Upload the excel and receive the result from the backend
+
+- History: view the transaction has been upload in the history
+
+
 ## Project setup
 ```
 npm install
@@ -21,8 +27,4 @@ npm run build
 npm run lint
 ```
 
-### 2 routes:
-- Main form: Upload the excel and receive the result from the backend
-
-- History: view the transaction has been upload in the history
 
